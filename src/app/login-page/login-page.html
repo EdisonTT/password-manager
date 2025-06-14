@@ -1,0 +1,17 @@
+<main>
+  <div class="content">
+    <h2>Welcome Back Edison T T</h2>
+    <p>Your secrets are sealed — until you say otherwise.</p>
+    <input-wrapper
+      [metaData]="{
+      id: 'masterPassword',
+      type: 'password',
+    }"
+      placeholder="Master Password"
+    />
+    <div class="button-container">
+      <button-wrapper buttonText="Login" (click)="loginClickHandler()" />
+      <button-wrapper [buttonType]="'Secondary'" buttonText="Reset App" />
+    </div>
+  </div>
+</main>

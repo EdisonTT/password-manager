@@ -1,0 +1,8 @@
+@if(label()) {
+<label [for]="metaData().id">{{ label() }}</label>
+}
+<input
+  [id]="metaData().id"
+  [type]="metaData().type"
+  [placeholder]="placeholder()"
+/>

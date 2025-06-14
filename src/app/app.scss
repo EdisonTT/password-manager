@@ -1,0 +1,8 @@
+// Make the app take the full height and width of the viewport
+
+:host {
+  display: block;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+}

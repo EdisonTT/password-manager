@@ -1,0 +1,35 @@
+nav {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 1rem 2rem;
+  h3 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    padding: 1rem 0;
+    margin: 0;
+  }
+
+  ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    li {
+      padding: 0.5rem;
+      cursor: pointer;
+      transition: background-color 0.3s, color 0.3s;
+      color: var(--text-color);
+      border-radius: 0.25rem;
+      &.active {
+        background-color: var(--accent-color);
+      }
+      &:hover {
+        background-color: var(--accent-color);
+      }
+    }
+  }
+  .centre {
+    flex-grow: 1;
+  }
+}

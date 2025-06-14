@@ -1,0 +1,8 @@
+<button
+  [class.primary]="addPrimaryClass()"
+  [class.secondary]="addSecondaryClass()"
+  [disabled]="isDisabled()"
+  (click)="clickHandler()"
+>
+  {{buttonText()}}
+</button>

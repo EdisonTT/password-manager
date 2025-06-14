@@ -1,0 +1,15 @@
+@mixin header-style {
+  color: var(--text-color, #000000);
+  text-align: center;
+  font-family: "Roboto", sans-serif;
+  font-weight: 600;
+}
+
+@mixin content-style {
+  font-size: 1rem;
+  color: var(--text-color, #000000);
+  text-align: justify;
+  line-height: 1.5;
+  font-family: "Poppins", sans-serif;
+  font-weight: 500;
+}

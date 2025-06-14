@@ -1,0 +1,29 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 2rem;
+}
+
+.container {
+  display: flex;
+  flex-direction: row;
+  flex-grow: 1;
+  gap: 0.5rem;
+  height: 100%;
+  .side-bar {
+    flex-grow: 1;
+    background-color: var(--surface-color);
+    border-radius: 0.5rem;
+    overflow: auto;
+    height: 100%;
+  }
+
+  .content {
+    flex-grow: 7;
+    height: 100%;
+    background-color: var(--surface-color);
+    border-radius: 0.5rem;
+    overflow: auto;
+  }
+}

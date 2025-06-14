@@ -1,0 +1,61 @@
+html,
+body {
+  height: 100vh;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  overflow: hidden;
+  background-color: var(--bg-color, #ffffff);
+  color: var(--text-color, #000000);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: inherit;
+}
+// src/styles.scss
+$light-theme: (
+  bg-color: #ffffff,
+  text-color: #000000,
+);
+
+$dark-theme: (
+  bg-color: #121212,
+  surface-color: #1e1e1e,
+  border-color: #2a2a2a,
+  text-color: #e0e0e0,
+  secondary-text-color: #b0b0b0,
+  accent-color: #bb86fc,
+  error-color: #cf6679,
+
+  // Input styles
+  input-bg-color: #292929,
+  input-border-color: #383838,
+  input-border-focus-color: #9a6cd6,
+  input-border-disabled-color: #1a1a1a,
+
+  // Primary Button
+  btn-primary-bg: #bb86fc,
+  btn-primary-border: #bb86fc,
+  btn-primary-bg-hover: #a473e9,
+  btn-primary-bg-active: #925fe0,
+  btn-primary-disabled-bg: #3a2f4d,
+
+  btn-primary-text: #121212,
+  btn-primary-text-disabled: #666666,
+);
+
+@mixin theme-variables($theme-map) {
+  @each $key, $value in $theme-map {
+    --#{$key}: #{$value};
+  }
+}
+
+:root {
+  @include theme-variables($dark-theme);
+}
+
+.light-theme {
+  @include theme-variables($light-theme);
+}

@@ -1,0 +1,28 @@
+@import "common";
+main {
+  display: flex;
+  height: 100%;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+  .content {
+    padding: 4rem 2rem;
+    border-radius: 16px;
+    background-color: var(--surface-color, #ffffff);
+    max-width: 50%;
+    border: 1px solid var(--border-color, #e0e0e0);
+    h2 {
+      @include header-style;
+      margin: 0 0 1rem 0;
+    }
+    p {
+      @include content-style;
+      margin: 0;
+    }
+    .button-container {
+      display: flex;
+      flex-direction: row;
+      gap: 1rem;
+    }
+  }
+}

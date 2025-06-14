@@ -1,0 +1,37 @@
+:host {
+  width: 100%;
+  padding: 0.5rem 0;
+}
+
+button {
+  width: 100%;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  border: 0;
+  &:hover {
+    scale: 1.05;
+    cursor: pointer;
+  }
+  &.disabled {
+    border: none;
+    cursor: default;
+    pointer-events: none;
+  }
+  &.primary {
+    background-color: var(--btn-primary-bg);
+    border: 1px solid var(--btn-primary-border);
+    color: var(--btn-primary-text);
+    &:hover {
+      background-color: var(--btn-primary-bg-hover);
+    }
+    &:disabled {
+      background-color: var(--btn-primary-disabled-bg);
+      color: var(--btn-primary-text-disabled);
+    }
+  }
+  &.secondary {
+    background-color: transparent;
+    border: 1px solid var(--btn-primary-border);
+    color: var(--btn-primary-border);
+  }
+}
