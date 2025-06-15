@@ -1,6 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { InputWrapper, ButtonWrapper } from '../wrappers';
 import { Router } from '@angular/router';
+import { SECONDARY_BUTTON } from '../wrappers';
 
 @Component({
   selector: 'app-login-page',
@@ -10,6 +11,7 @@ import { Router } from '@angular/router';
 })
 export class LoginPage {
   // public Properties
+  public readonly buttonTypeSecondary = SECONDARY_BUTTON;
 
   //private properties
   private _router: Router;

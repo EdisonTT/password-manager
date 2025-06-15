@@ -10,5 +10,6 @@ import { InputWrapperMetaData } from '../interface';
 export class InputWrapper {
   metaData = input.required<InputWrapperMetaData>();
   label = input<string>();
-  placeholder = input<string>();
+  placeholder = input<string>('');
+  type = input<string>('text');
 }

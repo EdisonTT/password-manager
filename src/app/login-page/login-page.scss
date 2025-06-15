@@ -1,4 +1,4 @@
-@import "common";
+@use "common" as *;
 main {
   display: flex;
   height: 100%;
