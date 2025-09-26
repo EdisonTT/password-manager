@@ -1,8 +1,4 @@
 @if(label()) {
-<label [for]="metaData().id">{{ label() }}</label>
+<label [for]="id()">{{ label() }}</label>
 }
-<input
-  [id]="metaData().id"
-  [type]="type()"
-  [placeholder]="placeholder()"
-/>
+<input [id]="id()" [type]="type()" [placeholder]="placeholder()" />

@@ -9,17 +9,23 @@ import { PRIMARY_BUTTON, SECONDARY_BUTTON } from '../const';
   styleUrl: './button-wrapper.scss',
 })
 export class ButtonWrapper {
-  buttonType = input<ButtonType>(PRIMARY_BUTTON);
-  isDisabled = input<boolean>(false);
-  buttonText = input.required<string>();
+  public readonly buttonType = input<ButtonType>(PRIMARY_BUTTON);
+  public readonly isDisabled = input<boolean>(false);
+  public readonly buttonText = input.required<string>();
+
+  public readonly clicked = output<void>();
 
   // computed properties
-  addPrimaryClass = computed(() => this.buttonType() === PRIMARY_BUTTON);
-  addSecondaryClass = computed(() => this.buttonType() === SECONDARY_BUTTON);
-  click = output<void>();
+  public readonly addPrimaryClass = computed(
+    () => this.buttonType() === PRIMARY_BUTTON
+  );
+  public readonly addSecondaryClass = computed(
+    () => this.buttonType() === SECONDARY_BUTTON
+  );
 
-  clickHandler() {
+  public clickHandler() {
     if (this.isDisabled()) return;
-    this.click.emit();
+    console.log('Button clicked 111');
+    this.clicked.emit();
   }
 }

@@ -1,5 +1,4 @@
 import { Component, input } from '@angular/core';
-import { InputWrapperMetaData } from '../interface';
 
 @Component({
   selector: 'input-wrapper',
@@ -8,7 +7,7 @@ import { InputWrapperMetaData } from '../interface';
   styleUrl: './input-wrapper.scss',
 })
 export class InputWrapper {
-  metaData = input.required<InputWrapperMetaData>();
+  id = input.required<string>();
   label = input<string>();
   placeholder = input<string>('');
   type = input<string>('text');
