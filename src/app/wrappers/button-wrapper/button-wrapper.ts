@@ -13,7 +13,7 @@ export class ButtonWrapper {
   public readonly isDisabled = input<boolean>(false);
   public readonly buttonText = input.required<string>();
 
-  public readonly clicked = output<void>();
+  public readonly btnClick = output<void>();
 
   // computed properties
   public readonly addPrimaryClass = computed(
@@ -26,6 +26,6 @@ export class ButtonWrapper {
   public clickHandler() {
     if (this.isDisabled()) return;
     console.log('Button clicked 111');
-    this.clicked.emit();
+    this.btnClick.emit();
   }
 }

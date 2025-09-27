@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 import { HomeRoutes, Home } from './home';
 import { LoginPage } from './login-page/login-page';
+import { dbConnectorGuard } from './guards';
 
 export const routes: Routes = [
   {
@@ -11,6 +12,7 @@ export const routes: Routes = [
   {
     path: 'home',
     component: Home,
+    canActivate: [dbConnectorGuard],
     children: HomeRoutes,
   },
   {

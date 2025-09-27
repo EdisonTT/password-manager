@@ -1,4 +1,25 @@
 @if(label()) {
-<label [for]="id()">{{ label() }}</label>
+<label [class.mandatory]="isMandatory()" [for]="id()">{{ label() }}</label>
 }
-<input [id]="id()" [type]="type()" [placeholder]="placeholder()" />
+<div class="input-container" [class.margin-bottom]="!hasError()">
+  <input
+    [id]="id()"
+    [type]="localType()"
+    [placeholder]="placeholder()"
+    autocomplete="off"
+    [disabled]="disabled()"
+    (input)="onChangeEvent($event)"
+    (blur)="onClickEvent()"
+    [value]="localValue()"
+  />
+  @if (showEyeIcon()) {
+  <img
+    (click)="togglePasswordVisibility()"
+    [src]="passwordIconUrl()"
+    alt="eye"
+  />
+  }
+</div>
+@if(hasError()) {
+<span>{{ hasFormControl() ? localErrorMessage(): errorMessage()}}</span>
+}

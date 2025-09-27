@@ -1,3 +1,2 @@
-export * from './wrapper.interface';
-export * from './input-wrapper.interface';
+export * from './common';
 export * from './button-wrapper.interface';

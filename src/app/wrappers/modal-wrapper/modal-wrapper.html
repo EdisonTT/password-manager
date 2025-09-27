@@ -1,0 +1,13 @@
+<dialog id="myModal">
+  <div class="content">
+    <div class="header">
+      <h2>{{ headerText()}}</h2>
+      @if (showCloseButton()) {
+        <button (click)="closeModal.emit()">
+        <img src="/icons/close.icon.svg" alt="" />
+      </button>
+      }
+    </div>
+    <ng-content />
+  </div>
+</dialog>

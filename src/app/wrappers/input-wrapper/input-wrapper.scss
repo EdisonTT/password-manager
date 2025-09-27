@@ -12,20 +12,52 @@ label {
   margin-bottom: 0.5rem;
   text-align: left;
   width: 100%;
-}
-
-input {
-  width: 100%;
-  padding: 10px;
-  font-size: 16px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  background-color: var(--input-bg-color);
-  border: 1px solid var(--input-border-color);
-  color: var(--text-color);
-  &:focus {
-    border-color: var(--input-border-focus-color);
-    outline: none;
+  &.mandatory {
+    &::after {
+      content: "*";
+      color: var(--error-color);
+      margin-left: 0.25rem;
+    }
   }
 }
 
+.input-container {
+  display: flex;
+  width: 100%;
+  position: relative;
+  input {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: var(--input-bg-color);
+    border: 1px solid var(--input-border-color);
+    color: var(--text-color);
+    &:focus {
+      border-color: var(--input-border-focus-color);
+      outline: none;
+    }
+  }
+
+  img {
+    width: 20px;
+    height: 20px;
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+  }
+  &.margin-bottom {
+    margin-bottom: 0.5rem;
+  }
+}
+
+span {
+  width: 100%;
+  color: var(--error-color);
+  font-size: 14px;
+  text-align: left;
+  padding-top: 0.25rem;
+}

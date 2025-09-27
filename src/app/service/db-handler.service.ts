@@ -27,23 +27,20 @@ export class DbHandler {
   private _initiated = false;
 
   private readonly _entriesSubject = new BehaviorSubject<VaultEntry[]>([]);
-  private readonly _entries$ = this._entriesSubject.asObservable();
+  public get entries$() {
+    return this._entriesSubject.asObservable();
+  }
 
   constructor() {
     this._dbHelperService = inject(DbHelper);
-    this.init().subscribe();
-  }
-
-  public entries(): Observable<VaultEntry[]> {
-    return this._entries$;
   }
 
   /**
    * Initialize DB. Returns Observable<void>.
    * Call once on app start/login. Safe to call multiple times.
    */
-  private init(): Observable<void> {
-    if (this._initiated) return of(undefined);
+  public init(): Observable<boolean> {
+    if (this._initiated) return of(false);
 
     // defer ensures the openDB is executed when subscribed
     return defer(() =>
@@ -67,8 +64,9 @@ export class DbHandler {
       switchMap(() => this.loadAllToMemory()),
       tap(() => {
         this._initiated = true;
+        console.log('DB initialized');
       }),
-      map(() => undefined)
+      map(() => true)
     );
   }
 
@@ -173,5 +171,16 @@ export class DbHandler {
       tap(() => this._entriesSubject.next([])),
       map(() => undefined)
     );
+  }
+
+  close(): Observable<void> {
+    if (!this._db) return of(undefined);
+    return defer(() => {
+      this._db!.close();
+      this._db = undefined;
+      this._initiated = false;
+      this._entriesSubject.next([]);
+      return Promise.resolve(undefined);
+    });
   }
 }
