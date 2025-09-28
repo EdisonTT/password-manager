@@ -23,7 +23,7 @@ export class ButtonWrapper {
     () => this.buttonType() === SECONDARY_BUTTON
   );
 
-  public clickHandler() {
+  public clickHandler(event: Event) {
     if (this.isDisabled()) return;
     this.btnClick.emit();
   }

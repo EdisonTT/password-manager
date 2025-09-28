@@ -1,3 +1,4 @@
+@use "common" as *;
 dialog {
   display: flex;
   flex-direction: column;
@@ -22,6 +23,10 @@ dialog {
     display: flex;
     flex-direction: column;
     gap: 0px;
+    max-height: 90vh;
+    overflow-y: auto;
+    @include hide-scrollbar;
+
     .header {
       display: flex;
       justify-content: space-between;

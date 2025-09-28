@@ -2,7 +2,8 @@
   [class.primary]="addPrimaryClass()"
   [class.secondary]="addSecondaryClass()"
   [disabled]="isDisabled()"
-  (click)="clickHandler()"
+  (click)="clickHandler($event)"
+  type="button"
 >
   {{buttonText()}}
 </button>

@@ -31,19 +31,8 @@ export class DbHandler {
     return this._entriesSubject.asObservable();
   }
 
-  private temporaryDataStore = new BehaviorSubject<VaultEntry[]>([]); // for data that doesn't need to be persisted
-
   constructor() {
     this._dbHelperService = inject(DbHelper);
-  }
-
-  public get temporaryData$() {
-    return this.temporaryDataStore.asObservable();
-  }
-
-  public setTemporaryData(data: VaultEntry) {
-    const current = this.temporaryDataStore.getValue();
-    this.temporaryDataStore.next([...current, data]);
   }
 
   /**
@@ -108,7 +97,10 @@ export class DbHandler {
   public addEntry(entry: VaultDataFromClient): Observable<VaultEntry> {
     if (!this._db) return throwError(() => new Error('DB not initialized'));
 
-    const toInsert: VaultEntry = { ...entry, createdAt: Date.now() };
+    const toInsert: Omit<VaultEntry, 'id'> = {
+      ...entry,
+      createdAt: Date.now(),
+    };
 
     return defer(() =>
       from(this._db!.add(STORE_ENTRIES, toInsert as any))

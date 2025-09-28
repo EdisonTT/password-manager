@@ -12,7 +12,8 @@ import {
   Validators,
 } from '@angular/forms';
 import { DbHandler, FormHelper, PasswordManager } from '../../../service';
-import { VaultDataFromClient, VaultEntry } from '../../../interface';
+import { VaultDataFromClient } from '../../../interface';
+import { catchError, of, switchMap } from 'rxjs';
 
 @Component({
   selector: 'manage-password',
@@ -22,11 +23,16 @@ import { VaultDataFromClient, VaultEntry } from '../../../interface';
 })
 export class ManagePassword implements OnInit {
   // inputs
-  public readonly passwordData = input<PasswordData | null>(null);
+  public readonly data = input<PasswordData | null>(null);
 
-  public readonly onClose = output<void>();
+  // true - save and close
+  // false - close
+  public readonly onClose = output<boolean>();
 
   public readonly passwordForm = this.createForm();
+
+  private _id: number | null = null;
+  private _uuid: string | null = null;
 
   // services
   private readonly _formHelper: FormHelper;
@@ -53,29 +59,25 @@ export class ManagePassword implements OnInit {
   }
 
   private handleEditMode() {
-    // if (!this.passwordData()) return;
+    const id = this.data()?.id;
+    // if ID is there, UUID will also be there, uuid is kept as a backup for id
+    if (!id) return;
+    const { uuid, title, userName, password, domain, tags } = this.data()!;
+    this._id = id;
+    this._uuid = uuid!;
+
     // const data = this.extractData();
     this.passwordForm.patchValue({
-      title: 'test',
-      userName: 'test',
-      password: 'test',
-      domain: 'test.com',
-      tags: 'test',
+      title,
+      userName,
+      password,
+      ...(domain && { domain }),
+      ...(tags && { tags }),
     });
   }
 
-  // private extractData(): ManagePasswordFormRawAfterValidation {
-  //   return {
-  //     title: 'test',
-  //     userName: 'test',
-  //     password: 'test',
-  //     domain: 'test.com',
-  //     tags: 'test',
-  //   };
-  // }
-
-  public closeModal() {
-    this.onClose.emit();
+  public closeModal(flag: boolean) {
+    this.onClose.emit(flag);
   }
 
   public onSubmit() {
@@ -87,28 +89,38 @@ export class ManagePassword implements OnInit {
       this.passwordForm.getRawValue() as ManagePasswordFormRawAfterValidation;
     const { userName, password, domain, tags } = formData;
 
-    console.log(formData);
     this._passwordManager
       .encryptCredentials({
         userName,
         password,
         domain: domain || undefined, // using || to avoid empty string
       })
-      .subscribe({
-        next: (res) => {
-          console.log(res);
+      .pipe(
+        switchMap((res) => {
           const toStore: VaultDataFromClient = {
-            uuid: crypto.randomUUID(),
+            uuid: this._uuid ?? crypto.randomUUID(),
             title: formData.title,
             domain: domain || '',
             ciphertext: res.ciphertext,
             iv: res.iv,
             tags: tags ? [tags] : undefined,
           };
-          this._dbHandler.setTemporaryData(toStore as VaultEntry);
-        },
-        error: (err) => {
-          console.error(err);
+          return this._id
+            ? this._dbHandler.updateEntry(this._id, toStore)
+            : this._dbHandler.addEntry(toStore);
+        }),
+        catchError((err) => {
+          console.error('Failed to save the credentials');
+          return of(null);
+        })
+      )
+      .subscribe({
+        next: (res) => {
+          if (!res) return;
+          this._id = res.id ?? null;
+          this._uuid = res.uuid ?? null;
+          console.log('data saved');
+          this.closeModal(true);
         },
       });
   }

@@ -19,6 +19,9 @@ export interface ManagePasswordFormRawAfterValidation {
 }
 
 export type PasswordData = {
+  id?: number;
+  uuid?: string;
+  title: string;
   userName: string;
   password: string;
   domain?: string;
