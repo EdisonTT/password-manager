@@ -38,6 +38,12 @@ label {
       border-color: var(--input-border-focus-color);
       outline: none;
     }
+
+    &:disabled {
+      pointer-events: none;
+      cursor: default;
+      border-color: var(--input-border-disabled-color);
+    }
   }
 
   img {

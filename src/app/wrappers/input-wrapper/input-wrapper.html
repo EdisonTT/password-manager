@@ -1,7 +1,7 @@
 @if(label()) {
 <label [class.mandatory]="isMandatory()" [for]="id()">{{ label() }}</label>
 }
-<div class="input-container" [class.margin-bottom]="!hasError()">
+<div class="input-container" [class.margin-bottom]="!localErrorMessage()">
   <input
     [id]="id()"
     [type]="localType()"
@@ -11,6 +11,7 @@
     (input)="onChangeEvent($event)"
     (blur)="onClickEvent()"
     [value]="localValue()"
+    [disabled]="disabled()"
   />
   @if (showEyeIcon()) {
   <img
@@ -20,6 +21,6 @@
   />
   }
 </div>
-@if(hasError()) {
-<span>{{ hasFormControl() ? localErrorMessage(): errorMessage()}}</span>
+@if(localErrorMessage()) {
+<span>{{ localErrorMessage()}}</span>
 }

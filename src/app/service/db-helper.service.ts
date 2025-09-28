@@ -27,7 +27,7 @@ export class DbHelper {
         ? new Uint8Array(e.ciphertext)
         : new Uint8Array(0),
       iv: e.iv ? new Uint8Array(e.iv) : new Uint8Array(0),
-      meta: e.meta ? JSON.parse(JSON.stringify(e.meta)) : {},
+      tags: e.tags ?? [],
     };
   }
 }

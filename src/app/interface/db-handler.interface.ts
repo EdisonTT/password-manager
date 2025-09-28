@@ -4,15 +4,20 @@
  */
 export interface VaultEntry {
   id?: number; // primary key (autoIncrement)
-  uuid?: string; // optional stable id
+  uuid: string; // optional stable id
+  title: string;
   domain: string;
-  usernameHint?: string; // optional searchable hint (non-sensitive)
   ciphertext: Uint8Array; // encrypted payload (username/password/notes)
   iv: Uint8Array; // AES-GCM nonce
   createdAt: number;
   updatedAt?: number;
-  meta?: Record<string, any>;
+  tags?: string[]; // optional tags for searching/filtering
 }
+
+export type VaultDataFromClient = Omit<
+  VaultEntry,
+  'id' | 'createdAt' | 'updatedAt'
+>;
 
 /**
  * Export format for JSON files (base64 encoded binary)
@@ -26,11 +31,10 @@ export interface ExportVaultFormat {
     id?: number;
     uuid?: string;
     domain: string;
-    usernameHint?: string;
     ciphertext: string; // base64
     iv: string; // base64
     createdAt: number;
     updatedAt?: number;
-    meta?: Record<string, any>;
+    tags?: string[]; // optional tags for searching/filtering
   }>;
 }

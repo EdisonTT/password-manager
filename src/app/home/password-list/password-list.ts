@@ -3,6 +3,7 @@ import { ButtonWrapper, InputWrapper } from '../../wrappers';
 import { PasswordCard } from './password-card/password-card';
 import { DbHandler } from '../../service';
 import { ManagePassword } from './manage-password/manage-password';
+import { VaultEntry } from '../../interface';
 
 @Component({
   selector: 'password-list',
@@ -14,6 +15,7 @@ export class PasswordList implements OnInit {
   private readonly _dbHandlerService: DbHandler;
 
   public readonly showPasswordModal = signal<boolean>(false);
+  public readonly passwordArray = signal<VaultEntry[]>([]);
 
   constructor() {
     this._dbHandlerService = inject(DbHandler);
@@ -21,13 +23,8 @@ export class PasswordList implements OnInit {
 
   ngOnInit(): void {
     this._dbHandlerService.entries$.subscribe(console.log);
-  }
-
-  public buttonClick() {}
-
-  public clearDB() {
-    this._dbHandlerService.clearAll().subscribe(() => {
-      console.log('All entries cleared');
+    this._dbHandlerService.temporaryData$.subscribe((data) => {
+      this.passwordArray.set(data);
     });
   }
 }

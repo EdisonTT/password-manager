@@ -10,8 +10,8 @@ import {
 } from '@angular/core';
 import { ControlValueAccessor, FormControl, NgControl } from '@angular/forms';
 import { of, Subject, switchMap, takeUntil } from 'rxjs';
-import { FormHelper } from '../../service/form-helper.service';
 import { ErrorFromControl } from '../interface';
+import { FormHelper } from '../../service';
 
 @Component({
   selector: 'input-wrapper',
@@ -27,6 +27,7 @@ export class InputWrapper implements OnInit, OnDestroy, ControlValueAccessor {
   public readonly type = input<string>('text');
   public readonly isMandatory = input<boolean>(false);
   public readonly disabled = input<boolean>(false);
+  public readonly value = input<string>('');
   // show password icon happens by default for password type
   // Use this to disable it
   public readonly showDefaultPasswordIcon = input<boolean>(true);
@@ -42,11 +43,6 @@ export class InputWrapper implements OnInit, OnDestroy, ControlValueAccessor {
       ? '/icons/eye.icon.svg'
       : '/icons/hide-eye.icon.svg'
   );
-  public readonly hasError = computed(() => {
-    return !!(this.hasFormControl()
-      ? this.localErrorMessage()
-      : this.errorMessage());
-  });
 
   private _ngControl: NgControl | null;
   private _control: FormControl<string> | null = null;
@@ -62,6 +58,18 @@ export class InputWrapper implements OnInit, OnDestroy, ControlValueAccessor {
     if (this._ngControl) {
       this._ngControl.valueAccessor = this;
     }
+
+    // Updating the localValue if input value is changed and has no form control
+    effect(() => {
+      if (this.hasFormControl()) return;
+      this.localValue.set(this.value());
+    });
+
+    // Updating the localErrorMessage if input errorMessage is changed and has no form control
+    effect(() => {
+      if (this.hasFormControl()) return;
+      this.localErrorMessage.set(this.errorMessage());
+    });
 
     effect(() => {
       this.localType.set(this.type());
@@ -101,7 +109,6 @@ export class InputWrapper implements OnInit, OnDestroy, ControlValueAccessor {
   }
 
   writeValue(text: string): void {
-    if (this.disabled() || !this._control) return;
     this.localValue.set(text);
   }
 

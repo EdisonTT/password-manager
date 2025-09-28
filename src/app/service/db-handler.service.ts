@@ -13,7 +13,7 @@ import {
   tap,
   throwError,
 } from 'rxjs';
-import { VaultEntry } from '../interface';
+import { VaultDataFromClient, VaultEntry } from '../interface';
 import { DbHelper } from './db-helper.service';
 import { DB_NAME, DB_VERSION, STORE_ENTRIES } from '../const';
 
@@ -31,8 +31,19 @@ export class DbHandler {
     return this._entriesSubject.asObservable();
   }
 
+  private temporaryDataStore = new BehaviorSubject<VaultEntry[]>([]); // for data that doesn't need to be persisted
+
   constructor() {
     this._dbHelperService = inject(DbHelper);
+  }
+
+  public get temporaryData$() {
+    return this.temporaryDataStore.asObservable();
+  }
+
+  public setTemporaryData(data: VaultEntry) {
+    const current = this.temporaryDataStore.getValue();
+    this.temporaryDataStore.next([...current, data]);
   }
 
   /**
@@ -94,9 +105,7 @@ export class DbHandler {
   }
 
   /** Add entry. Returns Observable<VaultEntry> with assigned id. */
-  public addEntry(
-    entry: Omit<VaultEntry, 'id' | 'createdAt' | 'updatedAt'>
-  ): Observable<VaultEntry> {
+  public addEntry(entry: VaultDataFromClient): Observable<VaultEntry> {
     if (!this._db) return throwError(() => new Error('DB not initialized'));
 
     const toInsert: VaultEntry = { ...entry, createdAt: Date.now() };

@@ -25,7 +25,6 @@ export class ButtonWrapper {
 
   public clickHandler() {
     if (this.isDisabled()) return;
-    console.log('Button clicked 111');
     this.btnClick.emit();
   }
 }
