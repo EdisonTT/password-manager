@@ -90,7 +90,7 @@ export class Signup implements OnInit, OnDestroy {
       next: () => {
         this._formHelper.updateNotifySubmission(false);
         this.signupForm.reset();
-        this._router.navigate(['home']);
+        this._router.navigate(['vault']);
       },
       error: (err) => {
         console.error('Error creating vault:', err);

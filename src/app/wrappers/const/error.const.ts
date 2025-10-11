@@ -10,6 +10,7 @@ export const ERROR_NAME = {
   PASS_MIN_DIGIT: 'passMinDigit',
   PASS_MIN_SPECIAL: 'passMinSpecial',
   PASS_NO_SPACES: 'passNoSpaces',
+  INVALID_MASTER_PASSWORD: 'invalidMasterPassword',
 } as const;
 
 export const ERROR_MESSAGE: ErrorMessage = {
@@ -45,5 +46,9 @@ export const ERROR_MESSAGE: ErrorMessage = {
   passNoSpaces: {
     message: 'Password must not contain spaces',
     priority: 106,
+  },
+  invalidMasterPassword: {
+    message: 'Invalid master password',
+    priority: 107,
   },
 };

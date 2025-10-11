@@ -35,7 +35,8 @@ export class SignupService {
   }
 
   public createVault(name: string, password: string): Observable<boolean> {
-    return this._dbHandler.clearAll().pipe(
+    // Level 1: Clear existing database (if any)
+    return this._dbHandler.init().pipe(
       switchMap(() => {
         const salt = this.createSalt();
         const iv = this.createIv();
@@ -54,22 +55,32 @@ export class SignupService {
             ciphertext: new Uint8Array([]),
           },
         };
+        // Level 2: Derive key from password and store vault metadata
         return this.derivekey(password, vaultMetaData.kdfParams).pipe(
           switchMap(({ key, kdf }) => {
             vaultMetaData.kdf = kdf;
             this._passwordManager.setMasterKey(key);
-            return this._dbHandler
-              .storeVaultMetadata(vaultMetaData)
-              .pipe(map(() => true));
+            key.fill(0);
+            // Level 3: Encrypt test string
+            return this._passwordManager.encryptTestString(iv).pipe(
+              switchMap((ciphertext) => {
+                vaultMetaData.test.ciphertext = ciphertext;
+                // Level 4: Store vault metadata in the database
+                return this._dbHandler
+                  .storeVaultMetadata(vaultMetaData)
+                  .pipe(map(() => true));
+              })
+            );
           })
         );
       })
     );
   }
 
-  private derivekey(
+  public derivekey(
     password: string,
-    config: KDFParams
+    config: KDFParams,
+    isArgon2id = true
   ): Observable<{
     key: Uint8Array;
     kdf: 'Argon2id' | 'pbkdf2';
@@ -80,7 +91,7 @@ export class SignupService {
       const encoder = new TextEncoder();
       const passwordBytes = encoder.encode(password);
       const maybeArgon2 = (window as any).argon2;
-      if (maybeArgon2 && typeof maybeArgon2.hash === 'function')
+      if (isArgon2id && maybeArgon2 && typeof maybeArgon2.hash === 'function')
         return this.argon2id(config, passwordBytes).pipe(
           map((key) => ({ key, kdf: 'Argon2id' as const }))
         );
@@ -159,16 +170,12 @@ export class SignupService {
         );
       }),
       catchError((err) => {
-        // propagate errors as observable error
         return throwError(() => err);
       }),
       finalize(() => {
-        // best-effort wipe sensitive buffers
         try {
           passwordBytes.fill(0);
-        } catch (e) {
-          // ignore, just best-effort
-        }
+        } catch (e) {}
       })
     );
   }

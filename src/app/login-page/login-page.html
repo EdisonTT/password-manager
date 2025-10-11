@@ -1,17 +1,19 @@
 <main>
   <div class="content">
-    <h2>Welcome Back Edison T T</h2>
+    <h2>Welcome Back {{ownerName()}}</h2>
     <p>Your secrets are sealed — until you say otherwise.</p>
     <input-wrapper
       id="masterPassword"
       placeholder="Master Password"
       type="password"
+      [formControl]="passwordControl"
     />
     <div class="button-container">
-      <button-wrapper buttonText="Login" (click)="loginClickHandler()" />
+      <button-wrapper buttonText="Login" (btnClick)="login()" />
       <button-wrapper
         [buttonType]="buttonTypeSecondary"
         buttonText="Reset App"
+        (btnClick)="resetApp()"
       />
     </div>
   </div>

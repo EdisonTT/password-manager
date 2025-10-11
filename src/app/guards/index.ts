@@ -1,1 +1,1 @@
-export * from './db-connector.guard';
+export * from './common-guard';

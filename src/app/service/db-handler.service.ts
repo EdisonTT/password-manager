@@ -1,5 +1,5 @@
 import { inject, Injectable } from '@angular/core';
-import { IDBPDatabase, openDB } from 'idb';
+import { deleteDB, IDBPDatabase, openDB } from 'idb';
 import {
   BehaviorSubject,
   catchError,
@@ -76,7 +76,6 @@ export class DbHandler {
       switchMap(() => this.loadAllToMemory()),
       tap(() => {
         this._initiated = true;
-        console.log('DB initialized');
       }),
       map(() => true)
     );
@@ -89,7 +88,7 @@ export class DbHandler {
 
   public storeVaultMetadata(metadata: VaultMetadata): Observable<void> {
     if (!this._db) return throwError(() => new Error('DB not initialized'));
-    return defer(() => from(this._db!.add(STORE_METADATA, metadata))).pipe(
+    return defer(() => from(this._db!.put(STORE_METADATA, metadata))).pipe(
       map(() => undefined)
     );
   }
@@ -198,7 +197,16 @@ export class DbHandler {
     );
   }
 
-  close(): Observable<void> {
+  // delete the database
+  public deleteDB(): Observable<boolean> {
+    return defer(() =>
+      this.close().pipe(
+        switchMap(() => from(deleteDB(DB_NAME)).pipe(map(() => true)))
+      )
+    );
+  }
+
+  private close(): Observable<void> {
     if (!this._db) return of(undefined);
     return defer(() => {
       this._db!.close();

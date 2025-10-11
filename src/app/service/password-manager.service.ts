@@ -16,6 +16,7 @@ import {
   RawCredentials,
 } from '../interface';
 import { Router } from '@angular/router';
+import { TEST_STRING } from '../const';
 
 @Injectable({
   providedIn: 'root',
@@ -32,7 +33,18 @@ export class PasswordManager {
   }
 
   public setMasterKey(key: Uint8Array) {
-    this._masterKey = key;
+    this._masterKey = new Uint8Array(key);
+  }
+
+  public clearMasterKey() {
+    if (this._masterKey) {
+      this._masterKey.fill(0);
+      this._masterKey = null;
+    }
+  }
+
+  public hasMasterKey(): boolean {
+    return !!this._masterKey;
   }
 
   private getMasterKey() {
@@ -42,11 +54,7 @@ export class PasswordManager {
       this._router.navigate(['login']);
       throw new Error('Master key is not set');
     }
-    return new Uint8Array([
-      0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0a, 0x0b,
-      0x0c, 0x0d, 0x0e, 0x0f, 0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17,
-      0x18, 0x19, 0x1a, 0x1b, 0x1c, 0x1d, 0x1e, 0x1f,
-    ]);
+    return new Uint8Array(this._masterKey);
   }
 
   private randBytes(len: number): Uint8Array {
@@ -177,6 +185,54 @@ export class PasswordManager {
           })
         )
       )
+    );
+  }
+
+  public encryptTestString(iv: Uint8Array): Observable<Uint8Array> {
+    const plaintext = this._textEncoder.encode(TEST_STRING);
+    return this.generateCryptoKey().pipe(
+      switchMap((cryptoKey) =>
+        from(
+          crypto.subtle.encrypt(
+            {
+              name: 'AES-GCM',
+              iv: this.toArrayBuffer(iv),
+              tagLength: 128,
+            },
+            cryptoKey,
+            plaintext
+          )
+        ).pipe(map((ctBuf: ArrayBuffer) => new Uint8Array(ctBuf)))
+      )
+    );
+  }
+
+  public decryptTestString(
+    iv: Uint8Array,
+    ciphertext: Uint8Array
+  ): Observable<boolean> {
+    return this.generateCryptoKey().pipe(
+      switchMap((cryptoKey) => {
+        return from(
+          crypto.subtle.decrypt(
+            {
+              name: 'AES-GCM',
+              iv: this.toArrayBuffer(iv),
+              tagLength: 128,
+            },
+            cryptoKey,
+            this.toArrayBuffer(ciphertext)
+          )
+        ).pipe(
+          map((ptBuf: ArrayBuffer) => {
+            const s = this._textDecoder.decode(ptBuf);
+            return s === TEST_STRING;
+          }),
+          catchError((err) => {
+            return [false];
+          })
+        );
+      })
     );
   }
 }

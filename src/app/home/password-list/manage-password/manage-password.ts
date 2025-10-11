@@ -119,7 +119,6 @@ export class ManagePassword implements OnInit {
           if (!res) return;
           this._id = res.id ?? null;
           this._uuid = res.uuid ?? null;
-          console.log('data saved');
           this.closeModal(true);
         },
       });
