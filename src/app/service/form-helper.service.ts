@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import {
   ERROR_MESSAGE,
   ErrorFromControl,
-  ErrorMessage,
   ErrorMessageItem,
   ErrorName,
 } from '../wrappers';

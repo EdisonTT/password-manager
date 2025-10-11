@@ -1,0 +1,37 @@
+<main>
+  <div class="content">
+    <h2>Welcome to Password Manager</h2>
+    <p>
+      Let's create your secure vault.<br />
+      The first step toward protecting your passwords.
+    </p>
+    <form [formGroup]="signupForm">
+      <input-wrapper
+        formControlName="name"
+        id="name"
+        placeholder="Enter your name"
+      />
+      <input-wrapper
+        formControlName="password"
+        id="create-password"
+        placeholder="Enter Vault password"
+        type="password"
+      />
+      <input-wrapper
+        formControlName="confirmPassword"
+        id="confirm-passord"
+        placeholder="Confirm your Vault Password"
+        type="password"
+        [showDefaultPasswordIcon]="false"
+      />
+    </form>
+    <div class="info">
+      <img src="/icons/caution.icon.svg" alt="caution" />
+      <p>
+        Your vault password cannot be recovered if lost. Keep it safe. It's the
+        only key to unlock your data.
+      </p>
+    </div>
+    <button-wrapper buttonText="Create Vault" (btnClick)="createVault()" />
+  </div>
+</main>

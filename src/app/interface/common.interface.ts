@@ -9,3 +9,12 @@ export type FormValueWithoutNull<T> = {
     ? Exclude<V, null>
     : never;
 };
+
+export type PasswordValidatorConfig = Partial<{
+  minLength: number;
+  requireUpper: boolean;
+  requireLower: boolean;
+  requireDigit: boolean;
+  requireSpecial: boolean;
+  noSpaces: boolean;
+}>;

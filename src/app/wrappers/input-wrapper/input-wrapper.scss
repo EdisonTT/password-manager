@@ -44,6 +44,9 @@ label {
       cursor: default;
       border-color: var(--input-border-disabled-color);
     }
+    &.error {
+      border-color: var(--error-color);
+    }
   }
 
   img {

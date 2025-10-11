@@ -2,6 +2,7 @@ import { Routes } from '@angular/router';
 import { HomeRoutes, Home } from './home';
 import { LoginPage } from './login-page/login-page';
 import { dbConnectorGuard } from './guards';
+import { Signup } from './signup/signup';
 
 export const routes: Routes = [
   {
@@ -10,13 +11,22 @@ export const routes: Routes = [
     pathMatch: 'full',
   },
   {
-    path: 'home',
-    component: Home,
+    path: '',
     canActivate: [dbConnectorGuard],
-    children: HomeRoutes,
-  },
-  {
-    path: 'login',
-    component: LoginPage,
+    children: [
+      {
+        path: 'home',
+        loadComponent: () => Promise.resolve(Home),
+        children: HomeRoutes,
+      },
+      {
+        path: 'login',
+        component: LoginPage,
+      },
+      {
+        path: 'signup',
+        component: Signup,
+      },
+    ],
   },
 ];

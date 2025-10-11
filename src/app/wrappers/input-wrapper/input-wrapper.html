@@ -12,6 +12,7 @@
     (blur)="onClickEvent()"
     [value]="localValue()"
     [disabled]="disabled()"
+    [class.error]="localErrorMessage()"
   />
   @if (showEyeIcon()) {
   <img

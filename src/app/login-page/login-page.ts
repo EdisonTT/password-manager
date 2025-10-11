@@ -2,6 +2,7 @@ import { Component, inject } from '@angular/core';
 import { InputWrapper, ButtonWrapper } from '../wrappers';
 import { Router } from '@angular/router';
 import { SECONDARY_BUTTON } from '../wrappers';
+import { LoginService } from '../service';
 
 @Component({
   selector: 'app-login-page',
@@ -15,8 +16,10 @@ export class LoginPage {
 
   //private properties
   private _router: Router;
+  private _login: LoginService;
   constructor() {
     this._router = inject(Router);
+    this._login = inject(LoginService);
   }
 
   loginClickHandler() {

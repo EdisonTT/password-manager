@@ -1,0 +1,46 @@
+@use "common" as *;
+main {
+  display: flex;
+  height: 100%;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+  .content {
+    padding: 4rem 2rem;
+    border-radius: 16px;
+    background-color: var(--surface-color, #ffffff);
+    max-width: 550px;
+    border: 1px solid var(--border-color, #e0e0e0);
+    h2 {
+      @include header-style;
+      margin: 0 0 1rem 0;
+    }
+    p {
+      @include content-style;
+      margin: 0;
+      text-align: center;
+    }
+
+    .info {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      border: 1px solid var(--info-border, #e0e0e0);
+      border-radius: 0.5rem;
+      margin-top: 0.5rem;
+      margin-bottom: 1rem;
+      padding: 0.5rem 1rem;
+      background-color: var(--info-bg, #9b87ff);
+
+      img {
+        height: 1.5rem;
+        width: 1.5rem;
+      }
+
+      p {
+        text-align: left;
+      }
+    }
+  }
+}

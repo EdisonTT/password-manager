@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import {
   catchError,
   defer,
@@ -15,6 +15,7 @@ import {
   ExtractedCredentials,
   RawCredentials,
 } from '../interface';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root',
@@ -23,9 +24,24 @@ export class PasswordManager {
   private _textEncoder = new TextEncoder();
   private _textDecoder = new TextDecoder();
 
-  constructor() {}
+  private _masterKey: Uint8Array | null = null;
+  private _router: Router;
+
+  constructor() {
+    this._router = inject(Router);
+  }
+
+  public setMasterKey(key: Uint8Array) {
+    this._masterKey = key;
+  }
 
   private getMasterKey() {
+    if (!this._masterKey) {
+      // If the master key is not set, navigate to the login page
+      // and throw an error to prevent further execution.
+      this._router.navigate(['login']);
+      throw new Error('Master key is not set');
+    }
     return new Uint8Array([
       0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0a, 0x0b,
       0x0c, 0x0d, 0x0e, 0x0f, 0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17,

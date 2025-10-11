@@ -44,6 +44,10 @@ $dark-theme: (
 
   btn-primary-text: #121212,
   btn-primary-text-disabled: #666666,
+
+  // Info
+  info-bg: #1e1e2b,
+  info-border: #9b87ff,
 );
 
 @mixin theme-variables($theme-map) {

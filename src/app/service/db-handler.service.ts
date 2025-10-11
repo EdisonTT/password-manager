@@ -13,9 +13,15 @@ import {
   tap,
   throwError,
 } from 'rxjs';
-import { VaultDataFromClient, VaultEntry } from '../interface';
+import { VaultDataFromClient, VaultEntry, VaultMetadata } from '../interface';
 import { DbHelper } from './db-helper.service';
-import { DB_NAME, DB_VERSION, STORE_ENTRIES } from '../const';
+import {
+  DB_NAME,
+  DB_VERSION,
+  STORE_ENTRIES,
+  STORE_METADATA,
+  VAULT_METADATA_KEY,
+} from '../const';
 
 @Injectable({
   providedIn: 'root',
@@ -40,7 +46,7 @@ export class DbHandler {
    * Call once on app start/login. Safe to call multiple times.
    */
   public init(): Observable<boolean> {
-    if (this._initiated) return of(false);
+    if (this._initiated) return of(true);
 
     // defer ensures the openDB is executed when subscribed
     return defer(() =>
@@ -51,6 +57,12 @@ export class DbHandler {
               db.createObjectStore(STORE_ENTRIES, {
                 keyPath: 'id',
                 autoIncrement: true,
+              });
+            }
+            if (!db.objectStoreNames.contains(STORE_METADATA)) {
+              db.createObjectStore(STORE_METADATA, {
+                keyPath: 'kind',
+                autoIncrement: false,
               });
             }
           },
@@ -67,6 +79,18 @@ export class DbHandler {
         console.log('DB initialized');
       }),
       map(() => true)
+    );
+  }
+
+  public getVaultMetadata(): Observable<VaultMetadata> {
+    if (!this._db) return throwError(() => new Error('DB not initialized'));
+    return defer(() => from(this._db!.get(STORE_METADATA, VAULT_METADATA_KEY)));
+  }
+
+  public storeVaultMetadata(metadata: VaultMetadata): Observable<void> {
+    if (!this._db) return throwError(() => new Error('DB not initialized'));
+    return defer(() => from(this._db!.add(STORE_METADATA, metadata))).pipe(
+      map(() => undefined)
     );
   }
 
