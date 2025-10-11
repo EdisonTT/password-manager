@@ -71,4 +71,8 @@ export class LoginService {
     this.hasVaultMetadata.next(null);
     return this._dbHandler.deleteDB();
   }
+
+  public logout() {
+    this._passwordManager.clearMasterKey();
+  }
 }

@@ -14,6 +14,7 @@ import { VaultEntry } from '../../../interface';
 import { DbHandler, PasswordManager } from '../../../service';
 import { map, Observable, Subject, takeUntil } from 'rxjs';
 import { PasswordData } from '../interface';
+import { HomeNotifier } from '../../service';
 
 @Component({
   selector: 'password-card',
@@ -41,6 +42,7 @@ export class PasswordCard implements OnInit, OnDestroy {
   // services
   private readonly _passwordManager: PasswordManager;
   private readonly _dbHandler: DbHandler;
+  private readonly _homeNotifier: HomeNotifier;
 
   // observables
   private readonly _cardData$: Observable<VaultEntry>;
@@ -52,6 +54,7 @@ export class PasswordCard implements OnInit, OnDestroy {
   constructor() {
     this._passwordManager = inject(PasswordManager);
     this._dbHandler = inject(DbHandler);
+    this._homeNotifier = inject(HomeNotifier);
     this._cardData$ = toObservable(this.cardData);
   }
 
@@ -157,5 +160,6 @@ export class PasswordCard implements OnInit, OnDestroy {
         break;
     }
     window.navigator.clipboard.writeText(text);
+    this._homeNotifier.showNotifier();
   }
 }

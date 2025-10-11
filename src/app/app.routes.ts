@@ -1,7 +1,12 @@
 import { Routes } from '@angular/router';
-import { HomeRoutes, Home } from './home';
+import { HomeRoutes, Home, HomeNotifier } from './home';
 import { LoginPage } from './login-page/login-page';
-import { dbConnectorGuard, masterKeyGuard, vaultMetaDataGuard } from './guards';
+import {
+  dbConnectorGuard,
+  masterKeyGuard,
+  signupGuard,
+  vaultMetaDataGuard,
+} from './guards';
 import { Signup } from './signup/signup';
 
 export const routes: Routes = [
@@ -11,10 +16,6 @@ export const routes: Routes = [
     pathMatch: 'full',
   },
   {
-    path: 'signup',
-    component: Signup,
-  },
-  {
     path: '',
     canActivate: [dbConnectorGuard],
     children: [
@@ -22,12 +23,18 @@ export const routes: Routes = [
         path: 'vault',
         loadComponent: () => Promise.resolve(Home),
         canActivate: [masterKeyGuard],
+        providers: [HomeNotifier],
         children: HomeRoutes,
       },
       {
         path: 'login',
         component: LoginPage,
         canActivate: [vaultMetaDataGuard],
+      },
+      {
+        path: 'signup',
+        component: Signup,
+        canActivate: [signupGuard],
       },
     ],
   },

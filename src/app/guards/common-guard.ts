@@ -8,6 +8,15 @@ export const dbConnectorGuard: CanActivateFn = () => {
   return dbHandler.init();
 };
 
+export const signupGuard: CanActivateFn = () => {
+  const login = inject(LoginService);
+  const router = inject(Router);
+  return login.hasVaultMetadata$.pipe(
+    take(1),
+    map((flag) => (!flag ? true : router.createUrlTree(['login'])))
+  );
+};
+
 export const vaultMetaDataGuard: CanActivateFn = () => {
   const login = inject(LoginService);
   const router = inject(Router);

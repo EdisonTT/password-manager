@@ -51,7 +51,6 @@ export class LoginPage implements OnInit {
 
   resetApp() {
     this._login.clearData().subscribe(() => {
-      console.log('Navigating to signup');
       this._router.navigate(['signup']);
     });
   }
