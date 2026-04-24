@@ -110,9 +110,10 @@ export class ManagePassword implements OnInit {
             : this._dbHandler.addEntry(toStore);
         }),
         catchError((err) => {
+          console.error(err);
           console.error('Failed to save the credentials');
           return of(null);
-        })
+        }),
       )
       .subscribe({
         next: (res) => {

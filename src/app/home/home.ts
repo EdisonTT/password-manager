@@ -12,6 +12,7 @@ import { HomeNotifier } from './service';
 })
 export class Home implements OnInit, OnDestroy {
   public showNotifier = signal(false);
+  public sidebarOpen = signal(false);
 
   private _destroy$ = new Subject<void>();
   private readonly _homeNotifier: HomeNotifier;
@@ -27,6 +28,14 @@ export class Home implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this._destroy$.next();
     this._destroy$.complete();
+  }
+
+  public toggleSidebar(): void {
+    this.sidebarOpen.update((open) => !open);
+  }
+
+  public closeSidebar(): void {
+    this.sidebarOpen.set(false);
   }
 
   private subForNotifier() {

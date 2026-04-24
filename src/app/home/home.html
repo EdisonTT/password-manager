@@ -1,9 +1,23 @@
+<!-- Hamburger Toggle (mobile only) -->
+<button class="hamburger-btn" (click)="toggleSidebar()" aria-label="Toggle sidebar">
+  <span class="hamburger-icon" [class.open]="sidebarOpen()">
+    <span></span>
+    <span></span>
+    <span></span>
+  </span>
+</button>
+
+<!-- Backdrop (mobile only, when sidebar open) -->
+@if (sidebarOpen()) {
+<div class="sidebar-backdrop" (click)="closeSidebar()"></div>
+}
+
 <div class="container">
-  <side-bar class="side-bar" />
+  <side-bar class="side-bar" [class.open]="sidebarOpen()" />
   <div class="content"><router-outlet /></div>
 </div>
+
 <!-- Notifier -->
 @if(showNotifier()) {
-<!-- create -->
 <div class="notifier">Copied to clipboard</div>
 }

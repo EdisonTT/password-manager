@@ -5,8 +5,11 @@ body {
   padding: 0;
   box-sizing: border-box;
   overflow: hidden;
-  background-color: var(--bg-color, #ffffff);
-  color: var(--text-color, #000000);
+  background-color: var(--bg-color, #121212);
+  color: var(--text-color, #e0e0e0);
+  font-family: "Poppins", "Roboto", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 *,
@@ -14,41 +17,155 @@ body {
 *::after {
   box-sizing: inherit;
 }
-// src/styles.scss
-$light-theme: (
-  bg-color: #ffffff,
-  text-color: #000000,
-);
+
+// ============================================================
+// THEME MAPS — Single source of truth for ALL colors
+// ============================================================
 
 $dark-theme: (
-  bg-color: #121212,
-  surface-color: #1e1e1e,
-  border-color: #2a2a2a,
-  text-color: #e0e0e0,
-  secondary-text-color: #b0b0b0,
+  // Core
+  bg-color: #0f0f13,
+  surface-color: #1a1a24,
+  border-color: #2a2a3a,
+  text-color: #e8e8f0,
+  secondary-text-color: #9898b0,
+
+  // Accent (Purple)
   accent-color: #bb86fc,
+  accent-hover: #a473e9,
+  accent-active: #925fe0,
+  accent-subtle: rgba(187, 134, 252, 0.08),
+  accent-glow: rgba(187, 134, 252, 0.15),
+
+  // Cards
+  card-bg: #1e1e2e,
+  card-hover-bg: #252538,
+  card-border: #2e2e42,
+
+  // Sidebar
+  sidebar-bg: #16161e,
+  nav-text-color: #8888a0,
+  nav-active-bg: rgba(187, 134, 252, 0.15),
+
+  // Overlay & Modal
+  overlay-bg: rgba(0, 0, 0, 0.7),
+  modal-bg: #1e1e2e,
+
+  // Gradients
+  gradient-start: #bb86fc,
+  gradient-end: #7c4dff,
+
+  // Shadows
+  shadow-color: rgba(0, 0, 0, 0.4),
+  shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.2),
+  shadow-md: 0 4px 16px rgba(0, 0, 0, 0.3),
+  shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.4),
+
+  // Divider
+  divider-color: #2a2a3a,
+
+  // Error
   error-color: #cf6679,
 
   // Input styles
-  input-bg-color: #292929,
-  input-border-color: #383838,
-  input-border-focus-color: #9a6cd6,
-  input-border-disabled-color: #1a1a1a,
+  input-bg-color: #1a1a28,
+  input-border-color: #32324a,
+  input-border-focus-color: #bb86fc,
+  input-border-disabled-color: #1a1a24,
 
   // Primary Button
   btn-primary-bg: #bb86fc,
   btn-primary-border: #bb86fc,
   btn-primary-bg-hover: #a473e9,
   btn-primary-bg-active: #925fe0,
-  btn-primary-disabled-bg: #3a2f4d,
-
-  btn-primary-text: #121212,
-  btn-primary-text-disabled: #666666,
+  btn-primary-disabled-bg: #2a2240,
+  btn-primary-text: #0f0f13,
+  btn-primary-text-disabled: #555566,
 
   // Info
-  info-bg: #1e1e2b,
-  info-border: #9b87ff,
-  notifier-bg: #4caf50,
+  info-bg: #1a1a2e,
+  info-border: #7c6dbb,
+
+  // Notifier
+  notifier-bg: #2e7d32,
+  notifier-text: #ffffff,
+
+  // Glass effect
+  glass-bg: rgba(26, 26, 36, 0.75),
+  glass-border: rgba(187, 134, 252, 0.12),
+);
+
+$light-theme: (
+  // Core
+  bg-color: #f5f5fa,
+  surface-color: #ffffff,
+  border-color: #e0e0e8,
+  text-color: #1a1a2e,
+  secondary-text-color: #6b6b80,
+
+  // Accent (Purple)
+  accent-color: #7c4dff,
+  accent-hover: #6a3de8,
+  accent-active: #5a2dd0,
+  accent-subtle: rgba(124, 77, 255, 0.06),
+  accent-glow: rgba(124, 77, 255, 0.12),
+
+  // Cards
+  card-bg: #ffffff,
+  card-hover-bg: #f8f8ff,
+  card-border: #e0e0e8,
+
+  // Sidebar
+  sidebar-bg: #fafaff,
+  nav-text-color: #8080a0,
+  nav-active-bg: rgba(124, 77, 255, 0.1),
+
+  // Overlay & Modal
+  overlay-bg: rgba(0, 0, 0, 0.4),
+  modal-bg: #ffffff,
+
+  // Gradients
+  gradient-start: #7c4dff,
+  gradient-end: #bb86fc,
+
+  // Shadows
+  shadow-color: rgba(0, 0, 0, 0.08),
+  shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.06),
+  shadow-md: 0 4px 16px rgba(0, 0, 0, 0.1),
+  shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.14),
+
+  // Divider
+  divider-color: #e0e0e8,
+
+  // Error
+  error-color: #d32f2f,
+
+  // Input styles
+  input-bg-color: #f8f8ff,
+  input-border-color: #d0d0e0,
+  input-border-focus-color: #7c4dff,
+  input-border-disabled-color: #ebebf0,
+
+  // Primary Button
+  btn-primary-bg: #7c4dff,
+  btn-primary-border: #7c4dff,
+  btn-primary-bg-hover: #6a3de8,
+  btn-primary-bg-active: #5a2dd0,
+  btn-primary-disabled-bg: #d8d0f0,
+  btn-primary-text: #ffffff,
+  btn-primary-text-disabled: #a0a0b0,
+
+  // Info
+  info-bg: #f0eeff,
+  info-border: #a090d0,
+
+  // Notifier
+  notifier-bg: #43a047,
+  notifier-text: #ffffff,
+
+  // Glass effect
+  glass-bg: rgba(255, 255, 255, 0.75),
+  glass-border: rgba(124, 77, 255, 0.1),
 );
 
 @mixin theme-variables($theme-map) {
