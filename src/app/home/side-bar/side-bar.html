@@ -6,7 +6,11 @@
   <div class="centre">
     <h3>Passwords</h3>
     <ul>
-      <li class="active">Passwords</li>
+      <li [class.active]="activeTag() === TAG_ALL" (click)="selectTag(TAG_ALL)">ALL</li>
+      <li [class.active]="activeTag() === TAG_UNTAGGED" (click)="selectTag(TAG_UNTAGGED)">Untagged</li>
+      @for (tag of tags(); track tag) {
+      <li [class.active]="activeTag() === tag" (click)="selectTag(tag)">{{tag}}</li>
+      }
     </ul>
   </div>
   <div class="bottom">

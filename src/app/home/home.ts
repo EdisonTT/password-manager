@@ -2,11 +2,12 @@ import { Component, inject, OnDestroy, OnInit, signal } from '@angular/core';
 import { SideBar } from './side-bar/side-bar';
 import { RouterOutlet } from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
-import { HomeNotifier } from './service';
+import { HomeNotifier, TagFilter } from './service';
 
 @Component({
   selector: 'app-home',
   imports: [SideBar, RouterOutlet],
+  providers: [HomeNotifier, TagFilter],
   templateUrl: './home.html',
   styleUrl: './home.scss',
 })
