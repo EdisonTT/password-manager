@@ -1,5 +1,5 @@
-import { Component, inject, input, OnInit, output } from '@angular/core';
-import { ModalWrapper, InputWrapper, ButtonWrapper } from '../../../wrappers';
+import { Component, inject, input, OnInit, OnDestroy, output, signal } from '@angular/core';
+import { ModalWrapper, InputWrapper, ButtonWrapper, SelectWrapper } from '../../../wrappers';
 import {
   ManagePasswordForm,
   ManagePasswordFormRawAfterValidation,
@@ -12,16 +12,17 @@ import {
   Validators,
 } from '@angular/forms';
 import { DbHandler, FormHelper, PasswordManager } from '../../../service';
+import { TagFilter } from '../../service';
 import { VaultDataFromClient } from '../../../interface';
-import { catchError, of, switchMap } from 'rxjs';
+import { catchError, of, switchMap, Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'manage-password',
-  imports: [ReactiveFormsModule, ModalWrapper, InputWrapper, ButtonWrapper],
+  imports: [ReactiveFormsModule, ModalWrapper, InputWrapper, ButtonWrapper, SelectWrapper],
   templateUrl: './manage-password.html',
   styleUrl: './manage-password.scss',
 })
-export class ManagePassword implements OnInit {
+export class ManagePassword implements OnInit, OnDestroy {
   // inputs
   public readonly data = input<PasswordData | null>(null);
 
@@ -34,18 +35,38 @@ export class ManagePassword implements OnInit {
   private _id: number | null = null;
   private _uuid: string | null = null;
 
+  public readonly tagsList = signal<string[]>([]);
+  public readonly showAddTag = signal<boolean>(false);
+  public readonly newTagControl = new FormControl<string>('');
+  public readonly duplicateTagError = signal<string | null>(null);
+
+  private readonly _destroy$ = new Subject<void>();
+
   // services
   private readonly _formHelper: FormHelper;
   private readonly _passwordManager: PasswordManager;
   private readonly _dbHandler: DbHandler;
+  private readonly _tagFilter: TagFilter;
+
   constructor() {
     this._formHelper = inject(FormHelper);
     this._passwordManager = inject(PasswordManager);
     this._dbHandler = inject(DbHandler);
+    this._tagFilter = inject(TagFilter);
   }
 
   ngOnInit(): void {
     this.handleEditMode();
+    this._tagFilter.tags$
+      .pipe(takeUntil(this._destroy$))
+      .subscribe((tags) => {
+        this.tagsList.set(tags);
+      });
+  }
+
+  ngOnDestroy(): void {
+    this._destroy$.next();
+    this._destroy$.complete();
   }
 
   private createForm(): FormGroup<ManagePasswordForm> {
@@ -78,6 +99,30 @@ export class ManagePassword implements OnInit {
 
   public closeModal(flag: boolean) {
     this.onClose.emit(flag);
+  }
+
+  public toggleAddTag() {
+    this.showAddTag.update(v => !v);
+    this.newTagControl.reset();
+    this.duplicateTagError.set(null);
+  }
+
+  public addNewTag() {
+    const val = this.newTagControl.value?.trim();
+    if (!val) {
+      this.toggleAddTag();
+      return;
+    }
+
+    const currentTags = this.tagsList();
+    if (currentTags.find(t => t.toLowerCase() === val.toLowerCase())) {
+      this.duplicateTagError.set('Tag already exists');
+      return;
+    }
+
+    this.tagsList.update(tags => [...tags, val]);
+    this.passwordForm.patchValue({ tags: val });
+    this.toggleAddTag();
   }
 
   public onSubmit() {
