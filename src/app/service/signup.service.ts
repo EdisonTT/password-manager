@@ -9,6 +9,7 @@ import {
   Observable,
   switchMap,
   throwError,
+  firstValueFrom
 } from 'rxjs';
 import { KDFParams, VaultMetadata } from '../interface';
 import { KDF_CONFIG } from '../const';
@@ -75,6 +76,70 @@ export class SignupService {
         );
       })
     );
+  }
+
+  public async importVault(onMessage: (msg: string) => void): Promise<boolean> {
+    onMessage('Starting import...');
+    if (!(window as any).electronAPI) {
+      onMessage('Import is only available in the desktop app.');
+      return false;
+    }
+
+    try {
+      onMessage('Waiting for file selection...');
+      const result = await (window as any).electronAPI.importVault();
+      if (result.success && result.data) {
+        onMessage('Parsing imported file...');
+        const parsed = JSON.parse(result.data);
+        
+        if (parsed.metadata) {
+          onMessage('Saving imported metadata...');
+          const m = parsed.metadata;
+          
+          if (m.kdfParams?.salt) m.kdfParams.salt = new Uint8Array(m.kdfParams.salt);
+          if (m.test?.iv) m.test.iv = new Uint8Array(m.test.iv);
+          if (m.test?.ciphertext) m.test.ciphertext = new Uint8Array(m.test.ciphertext);
+          
+          return await new Promise<boolean>((resolve) => {
+            this._dbHandler.storeVaultMetadata(m).subscribe({
+              next: async () => {
+                if (parsed.entries && Array.isArray(parsed.entries)) {
+                  onMessage(`Inserting ${parsed.entries.length} entries...`);
+                  for (const entry of parsed.entries) {
+                    const toInsert = {
+                      title: entry.title,
+                      ciphertext: new Uint8Array(entry.ciphertext),
+                      iv: new Uint8Array(entry.iv),
+                      domain: entry.domain,
+                      uuid: entry.uuid
+                    };
+                    await firstValueFrom(this._dbHandler.addEntry(toInsert));
+                  }
+                }
+                onMessage('Vault imported successfully!');
+                resolve(true);
+              },
+              error: (err) => {
+                onMessage('DB Error saving metadata: ' + err.message);
+                resolve(false);
+              }
+            });
+          });
+        } else {
+          onMessage('Invalid file format: Missing metadata.');
+          return false;
+        }
+      } else if (result.error !== 'User canceled') {
+        onMessage('Error importing vault: ' + result.error);
+        return false;
+      } else {
+        onMessage('');
+        return false;
+      }
+    } catch (err: any) {
+      onMessage('Error parsing or importing vault: ' + err.message);
+      return false;
+    }
   }
 
   public derivekey(

@@ -1,4 +1,4 @@
-import { Component, inject, OnDestroy, OnInit } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit, signal } from '@angular/core';
 import { ButtonWrapper, ERROR_NAME, InputWrapper } from '../wrappers';
 import {
   FormControl,
@@ -8,7 +8,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { SignupForm } from '../interface';
-import { FormHelper } from '../service';
+import { FormHelper, LoginService } from '../service';
 import { Subject, takeUntil } from 'rxjs';
 import { passwordValidator } from '../helper-functions';
 import { SignupService } from '../service/signup.service';
@@ -27,12 +27,29 @@ export class Signup implements OnInit, OnDestroy {
   private readonly _formHelper: FormHelper;
   private readonly _signupService: SignupService;
   private readonly _router: Router;
+  private readonly _loginService: LoginService;
+
+  public uiMessage = signal('');
 
   constructor() {
     this.signupForm = this.createSignupForm();
     this._formHelper = inject(FormHelper);
     this._signupService = inject(SignupService);
     this._router = inject(Router);
+    this._loginService = inject(LoginService);
+  }
+
+  public async importVault() {
+    const success = await this._signupService.importVault((msg: string) => {
+      this.uiMessage.set(msg);
+    });
+
+    if (success) {
+      this._loginService.fetchVaultMetadata();
+      setTimeout(() => {
+        this._router.navigate(['login']);
+      }, 1000);
+    }
   }
 
   ngOnInit(): void {

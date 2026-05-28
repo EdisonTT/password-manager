@@ -26,12 +26,20 @@
       />
     </form>
     <div class="info">
-      <img src="/icons/caution.icon.svg" alt="caution" />
+      <img src="icons/caution.icon.svg" alt="caution" />
       <p>
         Your vault password cannot be recovered if lost. Keep it safe. It's the
         only key to unlock your data.
       </p>
     </div>
-    <button-wrapper buttonText="Create Vault" (btnClick)="createVault()" />
+    <div class="action-row" style="display: flex; gap: 1rem; align-items: center; margin-top: 1rem;">
+      <button-wrapper buttonText="Create Vault" (btnClick)="createVault()" />
+      <span style="color: var(--secondary-text-color, #9898b0);">or</span>
+      <button-wrapper buttonText="Import Vault" buttonType="Secondary" (btnClick)="importVault()" />
+    </div>
+
+    @if(uiMessage()) {
+      <p style="color: var(--error-color, #cf6679); margin-top: 1rem;">{{uiMessage()}}</p>
+    }
   </div>
 </main>

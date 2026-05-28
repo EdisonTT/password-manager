@@ -1,12 +1,12 @@
 import { Component, inject, OnDestroy, OnInit, signal } from '@angular/core';
 import { ButtonWrapper } from '../../wrappers';
 import { LoginService } from '../../service';
-import { Router } from '@angular/router';
+import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'side-bar',
-  imports: [ButtonWrapper],
+  imports: [ButtonWrapper, RouterLink, RouterLinkActive],
   templateUrl: './side-bar.html',
   styleUrl: './side-bar.scss',
 })

@@ -30,7 +30,7 @@ export class PasswordCard implements OnInit, OnDestroy {
   public readonly domain = signal<string | undefined>(undefined);
   public readonly passwordType = signal<'password' | 'text'>('password');
   public readonly eyeIconPath = computed(() => {
-    return `/icons/${
+    return `icons/${
       this.passwordType() === 'text' ? 'hide-' : ''
     }eye.icon.svg`;
   });

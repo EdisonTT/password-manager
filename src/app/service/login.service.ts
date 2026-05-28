@@ -51,7 +51,7 @@ export class LoginService {
 
   // ensure that db is connected before calling this method
   // handled in guard level
-  private fetchVaultMetadata(): void {
+  public fetchVaultMetadata(): void {
     this._dbHandler.getVaultMetadata().subscribe({
       next: (metadata) => {
         this._vaultMetadata = metadata || null;

@@ -3,6 +3,16 @@
   <p>Manage your preferences</p>
 
   <section class="settings-section">
-    <p class="empty-msg">No settings available at this time.</p>
+    <div class="settings-action">
+      <div class="settings-info">
+        <h3>Export Vault</h3>
+        <p>Save a secure copy of your vault to your local file system.</p>
+      </div>
+      <button-wrapper buttonText="Export" (btnClick)="exportVault()" />
+    </div>
+
+    @if(uiMessage()) {
+      <p style="color: var(--error-color, #cf6679); margin-top: 2rem; font-family: inherit;">{{uiMessage()}}</p>
+    }
   </section>
 </main>

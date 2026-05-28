@@ -40,8 +40,8 @@ export class InputWrapper implements OnInit, OnDestroy, ControlValueAccessor {
 
   public readonly passwordIconUrl = computed(() =>
     this.localType() === 'password' && this.showEyeIcon()
-      ? '/icons/eye.icon.svg'
-      : '/icons/hide-eye.icon.svg'
+      ? 'icons/eye.icon.svg'
+      : 'icons/hide-eye.icon.svg'
   );
 
   private _ngControl: NgControl | null;
