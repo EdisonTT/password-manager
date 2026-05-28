@@ -12,13 +12,12 @@ import {
   Validators,
 } from '@angular/forms';
 import { DbHandler, FormHelper, PasswordManager } from '../../../service';
-import { TagFilter } from '../../service';
 import { VaultDataFromClient } from '../../../interface';
 import { catchError, of, switchMap, Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'manage-password',
-  imports: [ReactiveFormsModule, ModalWrapper, InputWrapper, ButtonWrapper, SelectWrapper],
+  imports: [ReactiveFormsModule, ModalWrapper, InputWrapper, ButtonWrapper],
   templateUrl: './manage-password.html',
   styleUrl: './manage-password.scss',
 })
@@ -35,33 +34,21 @@ export class ManagePassword implements OnInit, OnDestroy {
   private _id: number | null = null;
   private _uuid: string | null = null;
 
-  public readonly tagsList = signal<string[]>([]);
-  public readonly showAddTag = signal<boolean>(false);
-  public readonly newTagControl = new FormControl<string>('');
-  public readonly duplicateTagError = signal<string | null>(null);
-
   private readonly _destroy$ = new Subject<void>();
 
   // services
   private readonly _formHelper: FormHelper;
   private readonly _passwordManager: PasswordManager;
   private readonly _dbHandler: DbHandler;
-  private readonly _tagFilter: TagFilter;
 
   constructor() {
     this._formHelper = inject(FormHelper);
     this._passwordManager = inject(PasswordManager);
     this._dbHandler = inject(DbHandler);
-    this._tagFilter = inject(TagFilter);
   }
 
   ngOnInit(): void {
     this.handleEditMode();
-    this._tagFilter.tags$
-      .pipe(takeUntil(this._destroy$))
-      .subscribe((tags) => {
-        this.tagsList.set(tags);
-      });
   }
 
   ngOnDestroy(): void {
@@ -75,7 +62,6 @@ export class ManagePassword implements OnInit, OnDestroy {
       userName: new FormControl<string | null>(null, [Validators.required]),
       password: new FormControl<string | null>(null, [Validators.required]),
       domain: new FormControl<string | null>(null),
-      tags: new FormControl<string | null>(null),
     });
   }
 
@@ -83,7 +69,7 @@ export class ManagePassword implements OnInit, OnDestroy {
     const id = this.data()?.id;
     // if ID is there, UUID will also be there, uuid is kept as a backup for id
     if (!id) return;
-    const { uuid, title, userName, password, domain, tags } = this.data()!;
+    const { uuid, title, userName, password, domain } = this.data()!;
     this._id = id;
     this._uuid = uuid!;
 
@@ -93,36 +79,11 @@ export class ManagePassword implements OnInit, OnDestroy {
       userName,
       password,
       ...(domain && { domain }),
-      ...(tags && { tags }),
     });
   }
 
   public closeModal(flag: boolean) {
     this.onClose.emit(flag);
-  }
-
-  public toggleAddTag() {
-    this.showAddTag.update(v => !v);
-    this.newTagControl.reset();
-    this.duplicateTagError.set(null);
-  }
-
-  public addNewTag() {
-    const val = this.newTagControl.value?.trim();
-    if (!val) {
-      this.toggleAddTag();
-      return;
-    }
-
-    const currentTags = this.tagsList();
-    if (currentTags.find(t => t.toLowerCase() === val.toLowerCase())) {
-      this.duplicateTagError.set('Tag already exists');
-      return;
-    }
-
-    this.tagsList.update(tags => [...tags, val]);
-    this.passwordForm.patchValue({ tags: val });
-    this.toggleAddTag();
   }
 
   public onSubmit() {
@@ -132,7 +93,7 @@ export class ManagePassword implements OnInit, OnDestroy {
     }
     const formData =
       this.passwordForm.getRawValue() as ManagePasswordFormRawAfterValidation;
-    const { userName, password, domain, tags } = formData;
+    const { userName, password, domain } = formData;
 
     this._passwordManager
       .encryptCredentials({
@@ -148,7 +109,6 @@ export class ManagePassword implements OnInit, OnDestroy {
             domain: domain || '',
             ciphertext: res.ciphertext,
             iv: res.iv,
-            tags: tags ? [tags] : undefined,
           };
           return this._id
             ? this._dbHandler.updateEntry(this._id, toStore)

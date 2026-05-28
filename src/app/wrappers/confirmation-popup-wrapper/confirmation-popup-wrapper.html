@@ -1,0 +1,9 @@
+<modal-wrapper [headerText]="headerText()" (closeModal)="cancel.emit()">
+  <div class="confirmation-content">
+    <p>{{ message() }}</p>
+    <div class="actions">
+      <button-wrapper [buttonText]="cancelText()" buttonType="Secondary" (btnClick)="cancel.emit()" />
+      <button-wrapper [buttonText]="confirmText()" (btnClick)="confirm.emit()" />
+    </div>
+  </div>
+</modal-wrapper>
