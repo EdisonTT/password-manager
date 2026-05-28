@@ -101,12 +101,11 @@ export class PasswordCard implements OnInit, OnDestroy {
   }
 
   public openEditModal() {
-    const { id, uuid, title, tags } = this.cardData();
+    const { id, uuid, title } = this.cardData();
     this.editModalData.set({
       id,
       uuid,
       title,
-      tags: tags?.join(',') || '',
       userName: this.userName(),
       password: this.password(),
       ...(this.domain() && { domain: this.domain() }),

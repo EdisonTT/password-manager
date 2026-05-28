@@ -1,38 +1,75 @@
+@use "common" as *;
+
 nav {
   display: flex;
   flex-direction: column;
   height: 100%;
-  padding: 1rem 2rem;
-  p {
-    font-size: 0.85rem;
-    color: #a0a0a0;
+  padding: 1.5rem 1.25rem;
+
+  .top {
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--divider-color);
+    margin-bottom: 1rem;
   }
+
+  p {
+    font-size: 0.8rem;
+    color: var(--nav-text-color);
+    margin: 0;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-weight: 500;
+  }
+
   h2 {
-    font-size: 1.2rem;
+    font-size: 1.15rem;
     font-weight: 600;
-    margin-top: 0.25rem;
+    margin: 0.35rem 0 0 0;
     padding: 0;
+    color: var(--text-color);
+  }
+
+  h3 {
+    font-size: 0.75rem;
+    color: var(--nav-text-color);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    font-weight: 600;
+    margin: 0 0 0.5rem 0;
   }
 
   ul {
     list-style: none;
     padding: 0;
     margin: 0;
+
     li {
-      padding: 0.5rem;
+      padding: 0.6rem 0.75rem;
       cursor: pointer;
-      transition: background-color 0.3s, color 0.3s;
+      transition: all 0.25s ease;
       color: var(--text-color);
-      border-radius: 0.25rem;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      font-weight: 500;
+
       &.active {
-        background-color: var(--accent-color);
+        background: var(--nav-active-bg);
+        color: var(--accent-color);
       }
+
       &:hover {
-        background-color: var(--accent-color);
+        background: var(--nav-active-bg);
+        color: var(--accent-color);
       }
     }
   }
+
   .centre {
     flex-grow: 1;
+  }
+
+  .bottom {
+    border-top: 1px solid var(--divider-color);
+    padding-top: 0.75rem;
   }
 }

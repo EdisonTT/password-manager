@@ -1,0 +1,21 @@
+@if(label()) {
+<label [class.mandatory]="isMandatory()" [for]="id()">{{ label() }}</label>
+}
+<div class="input-container" [class.margin-bottom]="!localErrorMessage()">
+  <select
+    [id]="id()"
+    [disabled]="disabled()"
+    (change)="onChangeEvent($event)"
+    (blur)="onClickEvent()"
+    [value]="localValue()"
+    [class.error]="localErrorMessage()"
+  >
+    <option value="" disabled selected>{{ placeholder() }}</option>
+    @for (option of options(); track option) {
+    <option [value]="option">{{ option }}</option>
+    }
+  </select>
+</div>
+@if(localErrorMessage()) {
+<span>{{ localErrorMessage()}}</span>
+}

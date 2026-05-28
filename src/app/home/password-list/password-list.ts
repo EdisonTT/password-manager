@@ -1,4 +1,4 @@
-import { Component, inject, OnDestroy, OnInit, signal } from '@angular/core';
+import { Component, computed, inject, OnDestroy, OnInit, signal } from '@angular/core';
 import { ButtonWrapper, InputWrapper } from '../../wrappers';
 import { PasswordCard } from './password-card/password-card';
 import { DbHandler } from '../../service';
@@ -17,6 +17,19 @@ export class PasswordList implements OnInit, OnDestroy {
 
   public readonly showPasswordModal = signal<boolean>(false);
   public readonly passwordArray = signal<VaultEntry[]>([]);
+  public readonly searchTerm = signal<string>('');
+
+  public readonly filteredPasswords = computed(() => {
+    const keyword = this.searchTerm().trim().toLowerCase();
+    let entries = this.passwordArray();
+
+    if (!keyword) return entries;
+    return entries.filter((entry) => {
+      const title = entry.title?.toLowerCase() ?? '';
+      const domain = entry.domain?.toLowerCase() ?? '';
+      return title.includes(keyword) || domain.includes(keyword);
+    });
+  });
 
   private readonly _destroy$ = new Subject<void>();
 

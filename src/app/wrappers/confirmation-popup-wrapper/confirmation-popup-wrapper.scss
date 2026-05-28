@@ -1,0 +1,19 @@
+.confirmation-content {
+  padding: 1rem 0 0;
+  
+  p {
+    margin: 0 0 1.5rem 0;
+    color: var(--text-color);
+  }
+
+  .actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+
+    button-wrapper {
+      width: auto;
+      min-width: 100px;
+    }
+  }
+}
