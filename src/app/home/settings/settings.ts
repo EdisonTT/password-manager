@@ -1,4 +1,6 @@
-import { Component, inject, OnInit, OnDestroy, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, OnInit, OnDestroy, signal } from '@angular/core';
+import { save } from '@tauri-apps/plugin-dialog';
+import { writeTextFile } from '@tauri-apps/plugin-fs';
 import { ButtonWrapper } from '../../wrappers';
 import { DbHandler } from '../../service';
 import { Subject, takeUntil, firstValueFrom } from 'rxjs';
@@ -9,6 +11,7 @@ import { VaultEntry } from '../../interface';
   imports: [ButtonWrapper],
   templateUrl: './settings.html',
   styleUrl: './settings.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class Settings implements OnInit, OnDestroy {
   private readonly _dbHandler = inject(DbHandler);
@@ -16,6 +19,11 @@ export class Settings implements OnInit, OnDestroy {
   private _currentEntries: VaultEntry[] = [];
 
   public uiMessage = signal('');
+
+  private setMsg(msg: string) {
+    this.uiMessage.set(msg);
+    if (msg) setTimeout(() => this.uiMessage.set(''), 3000);
+  }
 
   ngOnInit(): void {
     this._dbHandler.entries$.pipe(takeUntil(this._destroy$)).subscribe(entries => {
@@ -29,12 +37,8 @@ export class Settings implements OnInit, OnDestroy {
   }
 
   public exportVault() {
-    this.uiMessage.set('Starting export...');
+    this.setMsg('Starting export...');
     console.log('[Settings] Starting export...');
-    if (!window.electronAPI) {
-      this.uiMessage.set('Export is only available in the desktop app.');
-      return;
-    }
 
     try {
       this.uiMessage.set('Converting entries...');
@@ -66,16 +70,19 @@ export class Settings implements OnInit, OnDestroy {
               }
             };
 
-            this.uiMessage.set('Sending to Electron...');
-            console.log('[Settings] Sending to Electron...');
+            this.uiMessage.set('Selecting save location...');
+            console.log('[Settings] Selecting save location...');
             const exportData = JSON.stringify({ metadata: serializedMetadata, entries: serializedEntries });
-            const result = await window.electronAPI.exportVault(exportData);
-            console.log('[Settings] Electron result:', result);
-            if (result.success) {
+            
+            const filePath = await save({
+              filters: [{ name: 'JSON', extensions: ['json'] }],
+              defaultPath: 'vault-export.json'
+            });
+
+            if (filePath) {
+              await writeTextFile(filePath, exportData);
               this.uiMessage.set('Vault exported successfully!');
               setTimeout(() => this.uiMessage.set(''), 3000);
-            } else if (result.error !== 'User canceled') {
-              this.uiMessage.set('Error exporting vault: ' + result.error);
             } else {
               this.uiMessage.set('');
             }

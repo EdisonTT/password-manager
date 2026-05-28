@@ -1,4 +1,6 @@
 import { inject, Injectable } from '@angular/core';
+import { open } from '@tauri-apps/plugin-dialog';
+import { readTextFile } from '@tauri-apps/plugin-fs';
 import { DbHandler } from './db-handler.service';
 import {
   catchError,
@@ -80,17 +82,18 @@ export class SignupService {
 
   public async importVault(onMessage: (msg: string) => void): Promise<boolean> {
     onMessage('Starting import...');
-    if (!(window as any).electronAPI) {
-      onMessage('Import is only available in the desktop app.');
-      return false;
-    }
 
     try {
       onMessage('Waiting for file selection...');
-      const result = await (window as any).electronAPI.importVault();
-      if (result.success && result.data) {
+      const filePath = await open({
+        multiple: false,
+        filters: [{ name: 'JSON', extensions: ['json'] }]
+      });
+
+      if (filePath) {
         onMessage('Parsing imported file...');
-        const parsed = JSON.parse(result.data);
+        const fileData = await readTextFile(filePath as string);
+        const parsed = JSON.parse(fileData);
         
         if (parsed.metadata) {
           onMessage('Saving imported metadata...');
@@ -129,9 +132,6 @@ export class SignupService {
           onMessage('Invalid file format: Missing metadata.');
           return false;
         }
-      } else if (result.error !== 'User canceled') {
-        onMessage('Error importing vault: ' + result.error);
-        return false;
       } else {
         onMessage('');
         return false;
