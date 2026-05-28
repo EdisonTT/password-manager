@@ -8,7 +8,7 @@ import {
   signal,
 } from '@angular/core';
 import { toObservable } from '@angular/core/rxjs-interop';
-import { ButtonWrapper, InputWrapper } from '../../../wrappers';
+import { ButtonWrapper, ConfirmationPopupWrapper, InputWrapper } from '../../../wrappers';
 import { ManagePassword } from '../manage-password/manage-password';
 import { VaultEntry } from '../../../interface';
 import { DbHandler, PasswordManager } from '../../../service';
@@ -18,7 +18,7 @@ import { HomeNotifier } from '../../service';
 
 @Component({
   selector: 'password-card',
-  imports: [InputWrapper, ButtonWrapper, ManagePassword],
+  imports: [InputWrapper, ButtonWrapper, ManagePassword, ConfirmationPopupWrapper],
   templateUrl: './password-card.html',
   styleUrl: './password-card.scss',
 })
@@ -38,6 +38,7 @@ export class PasswordCard implements OnInit, OnDestroy {
 
   public readonly showContent = signal<boolean>(false);
   public readonly editModalData = signal<PasswordData | null>(null);
+  public readonly showDeleteConfirm = signal<boolean>(false);
 
   // services
   private readonly _passwordManager: PasswordManager;
@@ -116,11 +117,20 @@ export class PasswordCard implements OnInit, OnDestroy {
     this.editModalData.set(null);
   }
 
-  public deletePassword() {
+  public promptDelete() {
+    this.showDeleteConfirm.set(true);
+  }
+
+  public confirmDelete() {
+    this.showDeleteConfirm.set(false);
     this._dbHandler.deleteEntry(this.cardData().id).subscribe({
       next: () => console.log('Entry Deleted'),
       error: () => console.error('Failed to Delete'),
     });
+  }
+
+  public cancelDelete() {
+    this.showDeleteConfirm.set(false);
   }
 
   private extractCredentials() {
