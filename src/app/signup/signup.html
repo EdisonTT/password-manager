@@ -32,14 +32,14 @@
         only key to unlock your data.
       </p>
     </div>
-    <div class="action-row" style="display: flex; gap: 1rem; align-items: center; margin-top: 1rem;">
+    <div class="action-row">
       <button-wrapper buttonText="Create Vault" (btnClick)="createVault()" />
-      <span style="color: var(--secondary-text-color, #9898b0);">or</span>
+      <span class="or-separator">or</span>
       <button-wrapper buttonText="Import Vault" buttonType="Secondary" (btnClick)="importVault()" />
     </div>
 
     @if(uiMessage()) {
-      <p style="color: var(--error-color, #cf6679); margin-top: 1rem;">{{uiMessage()}}</p>
+      <p class="ui-message">{{uiMessage()}}</p>
     }
   </div>
 </main>
