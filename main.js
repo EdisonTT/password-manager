@@ -23,9 +23,6 @@ function createWindow() {
   // Load the angular app build output
   mainWindow.loadFile(path.join(__dirname, 'dist/password-manager/browser/index.html'));
 
-  // Open DevTools automatically to help debug
-  mainWindow.webContents.openDevTools();
-
   mainWindow.maximize();
   mainWindow.setMenuBarVisibility(false);
 
